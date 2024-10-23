@@ -1,4 +1,4 @@
-** Forberedelse til fordypningsdager
+## Forberedelse til fordypningsdager ##
 
 
 - Åpne script for å opprette database (Drop create dagligvare xxx.sql)
