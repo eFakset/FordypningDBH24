@@ -1,3 +1,7 @@
+/*
+CREATE SCHEMA `dagligvare` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_danish_ci ;
+*/
+
 use dagligvare;
 
 DROP TABLE IF EXISTS bonus;
