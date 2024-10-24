@@ -3,7 +3,6 @@ GO
 
 /****  Sletter avhengigheter og tabeller  *****/
 
-
 ALTER TABLE [dbo].[bonus] DROP CONSTRAINT [FK_bonus_varegruppe]
 GO
 
@@ -91,6 +90,26 @@ IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[kasse
 DROP TABLE [dbo].[kasse]
 GO
 
+IF (OBJECT_ID('dbo.FK_bruker_brukertype', 'F') IS NOT NULL)
+BEGIN
+    ALTER TABLE [dbo].[bruker] DROP CONSTRAINT [FK_bruker_brukertype]
+END
+
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[bruker]') AND type in (N'U'))
+DROP TABLE [dbo].[bruker]
+GO
+
+
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[brukertype]') AND type in (N'U'))
+DROP TABLE [dbo].[brukertype]
+GO
+
+
+
+
+
+
+
 ALTER TABLE [dbo].[butikk] DROP CONSTRAINT [FK_butikk_kommune]
 GO
 
@@ -134,7 +153,7 @@ SET QUOTED_IDENTIFIER ON
 GO
 
 CREATE TABLE [dbo].[fylke](
-	[fylke_nr] [smallint] NOT NULL,
+	[fylke_nr] [char](2) NOT NULL,
 	[fylke_nv] [varchar](255) NOT NULL,
  CONSTRAINT [PK_fylke] PRIMARY KEY CLUSTERED
 (
@@ -145,9 +164,9 @@ GO
 
 /****** Object:  Table [dbo].[kommune] ******/
 CREATE TABLE [dbo].[kommune](
-	[kommune_nr] [smallint] NOT NULL,
+	[kommune_nr] [char](4) NOT NULL,
 	[kommune_nv] [varchar](255) NOT NULL,
-	[fylke_nr] [smallint] NOT NULL,
+	[fylke_nr] [char](2) NOT NULL,
  CONSTRAINT [PK_kommune] PRIMARY KEY CLUSTERED 
 (
 	[kommune_nr] ASC
@@ -166,7 +185,7 @@ GO
 CREATE TABLE [dbo].[kunde](
 	[kunde_nr] [smallint] NOT NULL,
 	[kunde_nv] [varchar](255) NOT NULL,
-	[kommune_nr] [smallint] NOT NULL,
+	[kommune_nr] [char](4) NOT NULL,
  CONSTRAINT [PK_kunde] PRIMARY KEY CLUSTERED 
 (
 	[kunde_nr] ASC
@@ -197,7 +216,7 @@ CREATE TABLE [dbo].[butikk](
 	[butikk_nr] [smallint] NOT NULL,
 	[butikk_nv] [varchar](255) NOT NULL,
 	[kjede_nr] [smallint] NOT NULL,
-	[kommune_nr] [smallint] NOT NULL,
+	[kommune_nr] [char](4) NOT NULL,
  CONSTRAINT [PK_butikk] PRIMARY KEY CLUSTERED 
 (
 	[butikk_nr] ASC
@@ -219,10 +238,42 @@ GO
 ALTER TABLE [dbo].[butikk] CHECK CONSTRAINT [FK_butikk_kommune]
 GO
 
+/****** Object:  Table [dbo].[brukertype] ******/
+CREATE TABLE [dbo].[brukertype](
+	[brukertype_kd] [char](1) NOT NULL,
+	[brukertype_nv] [varchar](45) NOT NULL,
+ CONSTRAINT [PK_brukertype] PRIMARY KEY CLUSTERED 
+(
+	[brukertype_kd]
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+
+/****** Object:  Table [dbo].[bruker] ******/
+CREATE TABLE [dbo].[bruker](
+	[bruker_nr] [smallint] NOT NULL,
+	[bruker_nv] [varchar](255) NOT NULL,
+	[brukertype_kd] [char](1) NOT NULL,
+	[passord] [varchar](255) NOT NULL,
+ CONSTRAINT [PK_bruker] PRIMARY KEY CLUSTERED 
+(
+	[bruker_nr] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+
+ALTER TABLE [dbo].[bruker]  WITH CHECK ADD  CONSTRAINT [FK_bruker_brukertype] FOREIGN KEY([brukertype_kd])
+REFERENCES [dbo].[brukertype] ([brukertype_kd])
+GO
+
+ALTER TABLE [dbo].[bruker] CHECK CONSTRAINT [FK_bruker_brukertype]
+GO
+
 /****** Object:  Table [dbo].[kasse] ******/
 CREATE TABLE [dbo].[kasse](
 	[butikk_nr] [smallint] NOT NULL,
 	[kasse_nr] [smallint] NOT NULL,
+	[bruker_nr] [smallint] NOT NULL,
  CONSTRAINT [PK_kasse] PRIMARY KEY CLUSTERED 
 (
 	[butikk_nr] ASC,

@@ -105,7 +105,7 @@ ALTER TABLE kasse
 
 /****** Object:  Table brukertype ******/
 CREATE TABLE brukertype (
-  brukertype_kd CHAR(2) NOT NULL,
+  brukertype_kd CHAR(1) NOT NULL,
   brukertype_nv VARCHAR(45) NOT NULL,
   PRIMARY KEY (brukertype_kd)
 );
@@ -113,9 +113,9 @@ CREATE TABLE brukertype (
 /****** Object:  Table bruker ******/
 CREATE TABLE bruker (
   bruker_nr int NOT NULL,
-  bruker_nv varchar(45) NOT NULL,
+  bruker_nv varchar(255) NOT NULL,
   brukertype_kd char(1) NOT NULL,
-  passord varchar(45) NOT NULL,
+  passord varchar(255) NOT NULL,
   PRIMARY KEY (bruker_nr)
 );  
 
