@@ -1,0 +1,32 @@
+body
+{
+    font-family: Arial, Verdana
+    ;font-size: 85%
+}
+
+td
+{
+    border: 5
+}
+
+a
+{
+    color: rgb(0,0,160)
+    ;text-decoration: none
+}
+
+a:visited
+{
+	color: rgb(145,53,155)
+}
+
+a.boldlink
+{
+	font-size: 120%
+}
+
+a.boldlink:visited
+{
+    color: rgb(0,0,160)
+	;font-size: 120%
+}
