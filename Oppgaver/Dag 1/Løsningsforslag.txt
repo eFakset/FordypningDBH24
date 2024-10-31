@@ -1,0 +1,133 @@
+Oppgave 1.1
+
+select varegruppe_nv Varegruppe, vare_nv Vare
+from vare, varegruppe
+where vare.varegruppe_nr = varegruppe.varegruppe_nr
+and varegruppe.varegruppe_nr = 2
+order by 2
+
+Utvid lista fra oppgave 1 med kolonne for antall solgt
+
+select varegruppe_nv Varegruppe, vare_nv Vare, count(*) Antall
+from vare, varegruppe, varelinje
+where vare.varegruppe_nr = varegruppe.varegruppe_nr
+and varelinje.vare_nr = vare.vare_nr
+and varegruppe.varegruppe_nr = 2
+group by varegruppe_nv, vare_nv 
+order by 2
+
+Oppgave 1.3
+
+select varegruppe_nv Varegruppe, vare_nv Vare, count(*) Antall
+from vare, varegruppe, varelinje
+where vare.varegruppe_nr = varegruppe.varegruppe_nr
+and varelinje.vare_nr = vare.vare_nr
+and varegruppe.varegruppe_nr = 2
+group by varegruppe_nv, vare_nv
+having count(*) < 40
+order by 3 desc
+
+Oppgave 1.4
+
+select varegruppe_nv Varegruppe, vare_nv Vare, month(tidspunkt) Mnd, count(*) Antall
+from vare, varegruppe, varelinje, handel
+where vare.varegruppe_nr = varegruppe.varegruppe_nr
+and varelinje.vare_nr = vare.vare_nr
+and varelinje.handel_nr = handel.handel_nr
+and varegruppe.varegruppe_nr = 2
+group by varegruppe_nv, vare_nv, month(tidspunkt) 
+having count(*) < 10
+order by 4 desc
+
+Oppgave 1.5
+
+select distinct 'Sep', vare_nv Varer
+from handel, varelinje, vare
+where handel.handel_nr = varelinje.handel_nr and varelinje.vare_nr = vare.vare_nr
+and month(tidspunkt) = 9
+and kunde_nr = 2 and varegruppe_nr in (3,4)
+
+Oppgave 1.6
+
+select distinct vare_nv Varer
+from handel, varelinje, vare
+where handel.handel_nr = varelinje.handel_nr and varelinje.vare_nr = vare.vare_nr
+and tidspunkt between '2024-10-01' and '2024-10-16'
+and kunde_nr = 2 and varegruppe_nr in (3,4)
+order by 1
+
+Oppgave 1.7
+
+select count(*) Antall
+from handel
+where butikk_nr in (
+select butikk_nr from butikk, kjede
+where butikk.kjede_nr = kjede.kjede_nr
+and kjede_nv = 'Admiral')
+
+Oppgave 1.8
+
+select butikk_nv as Navn 
+from butikk 
+where kommune_nr = 4001
+union 
+select kunde_nv
+from kunde 
+where kommune_nr = 4001
+
+Oppgave 1.9
+
+select 'Butikk' as '', butikk_nv as Navn /* Eller as Enhet */
+from butikk 
+where kommune_nr = 4001
+union 
+select 'Kunde', kunde_nv
+from kunde 
+where kommune_nr = 4001
+
+Merk: '' som alias er ikke tillatt i MS SQL Server
+
+Oppgave 1.10
+
+select varegruppe_nr Varegruppe, sum(bonus_bel) Beløp
+from bonus
+group by varegruppe_nr
+
+Oppgave 1.11
+
+select case when varegruppe_nr = 0 then 'Handel' else 'Frukt/grønt' end Bonustype,  sum(bonus_bel) Beløp
+from bonus
+group by Bonustype
+
+MS SQL Server
+
+select case when varegruppe_nr = 0 then 'Handel' else 'Frukt/grønt' end Bonustype,  sum(bonus_bel) Bel�p
+from bonus
+group by case when varegruppe_nr = 0 then 'Handel' else 'Frukt/grønt' end
+
+Oppgave 1.12
+
+select varegruppe_nv Varegruppe, vare_nv Vare 
+from vare, varegruppe
+where vare.varegruppe_nr = varegruppe.varegruppe_nr 
+and varegruppe.varegruppe_nr = 4 
+order by vare_nv 
+limit 15
+
+eller
+
+select varegruppe_nv Varegruppe, vare_nv Vare 
+from vare
+INNER JOIN varegruppe on vare.varegruppe_nr = varegruppe.varegruppe_nr 
+and varegruppe.varegruppe_nr = 4 
+order by vare_nv 
+limit 15 
+
+eller
+
+select varegruppe_nv Varegruppe, vare_nv Vare 
+from vare
+INNER JOIN varegruppe using (varegruppe_nr)
+where varegruppe.varegruppe_nr = 4 
+order by vare_nv 
+limit 15 
