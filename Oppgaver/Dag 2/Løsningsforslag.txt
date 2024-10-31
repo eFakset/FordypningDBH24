@@ -1,0 +1,89 @@
+Oppgave 2.1
+
+MERK:  Utover i oppgavesettet er eksemplene basert på feil versjon av databasen, dvs. handler fra januar-mars.
+
+select vare_nr, kjede_nr, date_format(gjelder_fra, '%d.%m.%Y') 'Gjelder fra', date_format(gjelder_til, '%d.%m.%Y') 'Gjelder til', format(enhetpris_bel, 2, 'no_NO') Enhetspris
+from kjedevarepris
+where vare_nr = 74
+and kjede_nr = 200
+order by gjelder_fra
+
+Oppgave 2.2
+
+select vare_nv, kjede_nv, date_format(gjelder_fra, '%d.%m.%Y') 'Gjelder fra', date_format(gjelder_til, '%d.%m.%Y') 'Gjelder til', format(enhetpris_bel, 2, 'no_NO') Enhetspris
+from kjede, vare, kjedevarepris
+where vare.vare_nr = kjedevarepris.vare_nr and kjede.kjede_nr = kjedevarepris.kjede_nr
+and vare.vare_nr = 74
+and kjede.kjede_nr = 200
+order by gjelder_fra
+
+Oppgave 2.3
+
+select vare_nv, kjede_nv, date_format(gjelder_fra, '%d.%m.%Y') 'Gjelder fra', date_format(gjelder_til, '%d.%m.%Y') 'Gjelder til', format(enhetpris_bel, 2, 'no_NO') Enhetspris
+from kjede, vare, kjedevarepris
+where vare.vare_nr = kjedevarepris.vare_nr and kjede.kjede_nr = kjedevarepris.kjede_nr
+and vare.vare_nr = 74
+and kjede.kjede_nr = 200
+and '2024-07-01' between gjelder_fra and gjelder_til
+
+Oppgave 2.4
+
+select vare_nv, kjede_nv, date_format(gjelder_fra, '%d.%m.%Y') 'Gjelder fra', date_format(gjelder_til, '%d.%m.%Y') 'Gjelder til', format(enhetpris_bel, 2, 'no_NO') Enhetspris
+from kjede, vare, kjedevarepris
+where vare.vare_nr = kjedevarepris.vare_nr and kjede.kjede_nr = kjedevarepris.kjede_nr
+and vare.vare_nr = 74
+and kjede.kjede_nr = 200
+and now() between gjelder_fra and ifnull(gjelder_til, '2099-12-31')
+
+Oppgave 2.6
+
+select vare_nv, count(*)
+from vare, varelinje
+where vare.vare_nr = varelinje.vare_nr
+group by vare_nv
+
+Oppgave 2.7
+
+select vare_nv, count(*)
+from vare 
+left outer join varelinje on vare.vare_nr = varelinje.vare_nr
+group by vare_nv
+
+Oppgave 2.8
+
+select vare_nv, count(varelinje_nr)
+from vare left outer join varelinje on vare.vare_nr = varelinje.vare_nr
+group by vare_nv
+
+Oppgave 2.9
+
+select butikk_nv, year(tidspunkt) * 100 + month(tidspunkt) as periode, sum(handel_bel)
+from butikk 
+join handel on butikk.butikk_nr = handel.butikk_nr
+group by butikk_nv, periode
+
+Oppgave 2.10
+
+select distinct kunde_nv Kunde, kk.kommune_nv 'Kundens kommune', kb.kommune_nv 'Butikkens kommune'
+from kunde, kommune kk, handel, butikk, kommune kb
+where kunde.kommune_nr = kk.kommune_nr and butikk.kommune_nr = kb.kommune_nr
+and kunde.kunde_nr = handel.kunde_nr
+and handel.butikk_nr = butikk.butikk_nr
+and kunde.kunde_nr != 0
+and kunde.kommune_nr != butikk.kommune_nr
+
+Oppgave 2.11
+
+select 'Bonuskunder' Kundetype, sum(varelinje_bel) Omsetning
+from handel, varelinje, vare
+where handel.handel_nr = varelinje.handel_nr
+and vare.vare_nr = varelinje.vare_nr
+and vare.varegruppe_nr in (3,4)
+and kunde_nr != 0
+union
+select 'Kontantkunder', sum(varelinje_bel)
+from handel, varelinje, vare
+where handel.handel_nr = varelinje.handel_nr
+and vare.vare_nr = varelinje.vare_nr
+and vare.varegruppe_nr in (3,4)
+and kunde_nr = 0
