@@ -1,7 +1,7 @@
 Oppgave 2.1
 
 MERK:  Utover i oppgavesettet er eksemplene basert på feil versjon av databasen, dvs. handler fra januar-mars.
-1. november kl 10:43: Nå skal versjon av databse være korrekt for oppgavebildene
+1. november kl 10:43: Nå skal versjon av database være korrekt for oppgavebildene
 
 select vare_nr, kjede_nr, date_format(gjelder_fra, '%d.%m.%Y') 'Gjelder fra', date_format(gjelder_til, '%d.%m.%Y') 'Gjelder til', format(enhetpris_bel, 2, 'no_NO') Enhetspris
 from kjedevarepris
